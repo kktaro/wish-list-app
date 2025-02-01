@@ -8,29 +8,19 @@ part 'home_view_model.g.dart';
 @riverpod
 class HomeViewModel extends _$HomeViewModel {
   @override
-  WishItemState build() {
-    _loadWishItems();
-    return const WishItemState();
-  }
-
-  Future<void> _loadWishItems() async {
+  Future<WishItemState> build() async {
     final database = ref.read(appDatabaseProvider);
-    try {
-      final wishItems = await database.getAllWishItems();
-      state = state.copyWith(wishItems: wishItems, isLoading: false);
-    } catch (e) {
-      state = state.copyWith(
-        errorMessage: e.toString(),
-        isLoading: false,
-      );
-    }
+    final wishItems = await database.getAllWishItems();
+    return WishItemState(wishItems: wishItems);
   }
 
   Future<void> addWishItem(WishItemsCompanion entry) async {
     final database = ref.read(appDatabaseProvider);
     final notificationManager = ref.read(notificationManagerProvider);
 
-    try {
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(() async {
       final id = await database.addWishItem(entry);
 
       // 通知のスケジュール
@@ -39,35 +29,36 @@ class HomeViewModel extends _$HomeViewModel {
         itemName: entry.name.value,
       );
 
-      await _loadWishItems();
-    } catch (e) {
-      state = state.copyWith(errorMessage: e.toString());
-    }
+      final wishItems = await database.getAllWishItems();
+      return WishItemState(wishItems: wishItems);
+    });
   }
 
   Future<void> deleteWishItem(int id) async {
     final database = ref.read(appDatabaseProvider);
     final notificationManager = ref.read(notificationManagerProvider);
 
-    try {
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(() async {
       await database.deleteWishItem(id);
       await notificationManager.cancelNotification(id);
 
-      await _loadWishItems();
-    } catch (e) {
-      state = state.copyWith(errorMessage: e.toString());
-    }
+      final wishItems = await database.getAllWishItems();
+      return WishItemState(wishItems: wishItems);
+    });
   }
 
   Future<void> updateLastCheckedAt(WishItem item) async {
     final database = ref.read(appDatabaseProvider);
 
-    try {
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(() async {
       await database.updateLastCheckedAt(item);
 
-      await _loadWishItems();
-    } catch (e) {
-      state = state.copyWith(errorMessage: e.toString());
-    }
+      final wishItems = await database.getAllWishItems();
+      return WishItemState(wishItems: wishItems);
+    });
   }
 }

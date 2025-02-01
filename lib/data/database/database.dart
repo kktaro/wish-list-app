@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
+import 'package:drift_flutter/drift_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'tables/wish_item_table.dart';
@@ -54,12 +53,10 @@ class AppDatabase extends _$AppDatabase {
     final oneMonthAgo = DateTime.now().subtract(const Duration(days: 30));
     return (select(wishItems)..where((t) => t.lastCheckedAt.isSmallerThanValue(oneMonthAgo))).get();
   }
-}
 
-LazyDatabase _openConnection() {
-  return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'wish_list.db'));
-    return NativeDatabase.createInBackground(file);
-  });
+    static QueryExecutor _openConnection() {
+    return driftDatabase(
+      name: 'my_database',
+    );
+  }
 }
