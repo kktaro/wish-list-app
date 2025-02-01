@@ -4,10 +4,16 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'tables/wish_item_table.dart';
 
 part 'database.g.dart';
+
+@Riverpod(keepAlive: true)
+AppDatabase appDatabase(AppDatabaseRef ref) {
+  return AppDatabase();
+}
 
 @DriftDatabase(tables: [WishItems])
 class AppDatabase extends _$AppDatabase {

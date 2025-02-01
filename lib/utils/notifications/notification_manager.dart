@@ -1,6 +1,14 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+
+part 'notification_manager.g.dart';
+
+@Riverpod(keepAlive: true)
+NotificationManager notificationManager(NotificationManagerRef ref) {
+  return NotificationManager();
+}
 
 class NotificationManager {
   static final NotificationManager _instance = NotificationManager._internal();
