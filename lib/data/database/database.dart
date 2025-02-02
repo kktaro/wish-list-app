@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -51,10 +48,12 @@ class AppDatabase extends _$AppDatabase {
   // 通知対象のアイテムを取得（最終確認日から1ヶ月以上経過したもの）
   Future<List<WishItem>> getNotificationTargetItems() {
     final oneMonthAgo = DateTime.now().subtract(const Duration(days: 30));
-    return (select(wishItems)..where((t) => t.lastCheckedAt.isSmallerThanValue(oneMonthAgo))).get();
+    return (select(wishItems)
+          ..where((t) => t.lastCheckedAt.isSmallerThanValue(oneMonthAgo)))
+        .get();
   }
 
-    static QueryExecutor _openConnection() {
+  static QueryExecutor _openConnection() {
     return driftDatabase(
       name: 'my_database',
     );
