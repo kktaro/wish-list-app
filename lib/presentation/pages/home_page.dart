@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wish_list_app/presentation/pages/wish_item_form_page.dart';
 import 'package:wish_list_app/presentation/view_models/home_view_model.dart';
 import 'package:wish_list_app/presentation/widgets/wish_item_list_tile.dart';
 
@@ -63,7 +64,12 @@ class HomePage extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: 追加画面への遷移を実装
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const WishItemFormPage(),
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),
